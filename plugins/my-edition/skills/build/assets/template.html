@@ -214,6 +214,11 @@
   }
   .used-by .eqref { border-bottom-color: color-mix(in srgb, var(--ink-3) 45%, transparent); color: var(--ink-3); }
   .used-by .eqref:hover { color: var(--accent); }
+  .used-by .secref {
+    color: var(--ink-3); cursor: pointer;
+    border-bottom: 1px dashed color-mix(in srgb, var(--ink-3) 45%, transparent);
+  }
+  .used-by .secref:hover { color: var(--accent); border-bottom-color: var(--accent); }
   .eqpop {
     position: fixed; z-index: 65; max-width: min(92vw, 34rem);
     background: var(--paper); border: 1px solid var(--rule); border-radius: 4px;
@@ -515,25 +520,50 @@
     registry[num] = eq;
   });
 
-  var usedBy = {};
-  Array.prototype.forEach.call(document.querySelectorAll('.eqref'), function (a) {
-    var target = a.getAttribute('data-ref');
-    var owner = a.closest('.eq');
-    if (!owner || !registry[target] || owner === registry[target]) { return; }
-    var on = owner.getAttribute('data-num');
-    (usedBy[target] = usedBy[target] || []).push(on);
+  /* ---- 逆引き（この式を使うところ） ---- */
+  /* 式の中からの参照は式番号で、本文からの参照は節で示す。
+     式の中だけに絞ると半分以上を取りこぼすため、両方を拾う。 */
+  var usedBy = {}, usedIn = {}, secLabel = {}, curSec = '';
+  Array.prototype.forEach.call(document.querySelectorAll('h2[id], .eqref'), function (el) {
+    if (el.tagName === 'H2') {
+      curSec = el.id;
+      var no = el.querySelector('.secno');
+      secLabel[curSec] = no ? no.textContent.trim() : el.textContent.trim();
+      return;
+    }
+    var target = el.getAttribute('data-ref');
+    if (!registry[target]) { return; }
+    var owner = el.closest('.eq');
+    if (owner) {
+      if (owner === registry[target]) { return; }
+      (usedBy[target] = usedBy[target] || []).push(owner.getAttribute('data-num'));
+    } else if (curSec) {
+      (usedIn[target] = usedIn[target] || []).push(curSec);
+    }
   });
 
-  Object.keys(usedBy).forEach(function (num) {
-    var eq = registry[num];
-    if (!eq) { return; }
-    var foot = eq.querySelector('.eq-foot');
+  function uniq(list) {
+    return list.filter(function (v, i, arr) { return arr.indexOf(v) === i; });
+  }
+
+  Object.keys(registry).forEach(function (num) {
+    var eqs = uniq(usedBy[num] || []);
+    var secs = uniq(usedIn[num] || []);
+    if (!eqs.length && !secs.length) { return; }
+    var foot = registry[num].querySelector('.eq-foot');
+    if (!foot) { return; }
     var wrap = document.createElement('span');
     wrap.className = 'used-by';
-    wrap.appendChild(document.createTextNode('この式を使う式：'));
-    usedBy[num].filter(function (v, i, arr) { return arr.indexOf(v) === i; }).forEach(function (n) {
+    wrap.appendChild(document.createTextNode('この式を使うところ：'));
+    eqs.forEach(function (n) {
       var a = document.createElement('a');
       a.className = 'eqref'; a.setAttribute('data-ref', n); a.textContent = n;
+      wrap.appendChild(a);
+    });
+    secs.forEach(function (id) {
+      var a = document.createElement('a');
+      a.className = 'secref'; a.setAttribute('data-secref', id);
+      a.textContent = (secLabel[id] || id) + '節';
       wrap.appendChild(a);
     });
     foot.insertBefore(wrap, foot.firstChild);
@@ -572,6 +602,15 @@
   document.addEventListener('click', function (e) {
     var a = e.target.closest ? e.target.closest('.eqref') : null;
     if (a) { e.preventDefault(); jumpTo(a.getAttribute('data-ref')); }
+  });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('.secref') : null;
+    if (!a) { return; }
+    e.preventDefault();
+    var h = document.getElementById(a.getAttribute('data-secref'));
+    if (!h) { return; }
+    hidePop();
+    h.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   document.addEventListener('mouseover', function (e) {
     var a = e.target.closest ? e.target.closest('.eqref') : null;
