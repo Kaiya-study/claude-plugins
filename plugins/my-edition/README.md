@@ -49,74 +49,60 @@
 
 ## 導入のしかた
 
-**ターミナルは使いません。**設定ファイルに数行足して、あとは画面から入れるだけです。
+**ターミナルも設定ファイルも使いません。**画面の操作だけで入ります。
 
-### 1. 設定ファイルに、置き場所を教える
+### 1. プラグインの画面を開く
 
-下のファイルを開きます。無ければ新しく作ってください。
+プロンプト欄の **＋ → Plugins**。サイドバーの **Customize → Plugins** でも同じです。
 
-| | 場所 |
-|---|---|
-| Windows | `C:\Users\〔あなた〕\.claude\settings.json` |
-| macOS | `~/.claude/settings.json` |
+### 2. 置き場所を登録する
 
-`extraKnownMarketplaces` に、次の1ブロックを足します。**ファイルが空なら、これをそのまま書けば済みます。**
+右上の **＋** を押して、**「リポジトリから追加」**を選びます。
+出てきた欄に、これを入れてください。
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "kaiya-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "Kaiya-study/claude-plugins"
-      }
-    }
-  }
-}
+```
+Kaiya-study/claude-plugins
 ```
 
-**すでに中身がある場合は、消さずに足してください。**
-`extraKnownMarketplaces` がすでにあることが多いので、そのときは**その直下に、既存の項目と並べて**書きます。
+同期が終わると、置き場所が登録されます。**一度やれば、以後は不要です。**
 
-**いちばん多い失敗が、既存の項目の「中」に入れてしまうことです。**
-JSON としては壊れないのでエラーが出ず、**ただ登録されないだけ**なので気づきにくい。
-既存の項目の閉じ括弧 `}` の**あとに** `,` を打って、そこから書き始めてください。
+### 3. 入れる
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "すでにあった名前": {
-      "source": { "source": "git", "url": "https://example.com/xxx.git" }
-    },
-    "kaiya-plugins": {
-      "source": { "source": "github", "repo": "Kaiya-study/claude-plugins" }
-    }
-  }
-}
+**「コード」タブ**に切り替えます。既定の「Anthropic」タブは Anthropic 製のものだけなので、
+そこを見ていても見つかりません。
+
+`my-edition` のカードが出るので、**「＋」**を押します。
+入れる範囲を聞かれたら **「ユーザー」** を選んでください。どのフォルダで作業しても使えるようになります。
+
+<details>
+<summary>ターミナルを使いたい場合</summary>
+
+```
+claude plugin marketplace add Kaiya-study/claude-plugins
+claude plugin install my-edition@kaiya-plugins
 ```
 
-`"すでにあった名前"` の**閉じ括弧のあとにカンマ**があり、
-`"すでにあった名前"` と `"kaiya-plugins"` が**同じ深さに並んでいれば正解**です。
+</details>
 
-自信がなければ、**Claude に頼んでも構いません。**
-「`~/.claude/settings.json` に kaiya-plugins のマーケットプレイスを追加して」と言えば、
-既存の設定を保ったまま書き足してくれます。
+<details>
+<summary>設定ファイル（settings.json）に書く方法について</summary>
 
-### 2. アプリを開き直す
+`~/.claude/settings.json` の `extraKnownMarketplaces` に手で書く方法もありますが、**勧めません。**
 
-設定は起動時に読まれます。**開いているセッションがあれば、開き直してください。**
+- 書いても**取得が走らず**、プラグインの一覧に何も出ないことがあります
+- 手で書いたあとに画面から追加しようとすると、
+  「its network source differs from the one declared for it in settings」という
+  **エラーで必ず失敗します**（画面側は入力を `https://github.com/…​.git` の形に直して送るため、
+  手で書いた `github` 形式と食い違います）
+- 既存の項目の**中**に入れてしまう間違いが起きやすく、JSON としては壊れないので**気づけません**
 
-### 3. 画面から入れる
+上の画面操作で追加すれば、**アプリが自分で settings.json に書き込みます。**触る必要はありません。
 
-プロンプト欄の **＋ → Plugins → Add plugin**。一覧に `my-edition` が出るので、選んで入れます。
-（サイドバーの **Customize → Plugins** からでも同じことができます）
-
-**入れる範囲は「ユーザー」を選んでください。**そうすれば、どのフォルダで作業しても使えます。
+</details>
 
 ---
 
-入れ終わったら、設定ファイルの出番はもうありません。
-以後は写真を渡して「行間を埋めて」と言うだけです。
+入れ終わったら、あとは写真を渡して「行間を埋めて」と言うだけです。
 
 ---
 
