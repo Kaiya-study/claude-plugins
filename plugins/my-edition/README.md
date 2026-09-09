@@ -60,7 +60,7 @@
 | Windows | `C:\Users\〔あなた〕\.claude\settings.json` |
 | macOS | `~/.claude/settings.json` |
 
-`extraKnownMarketplaces` に、次の1ブロックを足します。
+`extraKnownMarketplaces` に、次の1ブロックを足します。**ファイルが空なら、これをそのまま書けば済みます。**
 
 ```json
 {
@@ -76,10 +76,30 @@
 ```
 
 **すでに中身がある場合は、消さずに足してください。**
-`extraKnownMarketplaces` の項目がすでにあることが多いので、その中にキーを1つ増やす形になります。
+`extraKnownMarketplaces` がすでにあることが多いので、そのときは**その直下に、既存の項目と並べて**書きます。
+
+**いちばん多い失敗が、既存の項目の「中」に入れてしまうことです。**
+JSON としては壊れないのでエラーが出ず、**ただ登録されないだけ**なので気づきにくい。
+既存の項目の閉じ括弧 `}` の**あとに** `,` を打って、そこから書き始めてください。
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "すでにあった名前": {
+      "source": { "source": "git", "url": "https://example.com/xxx.git" }
+    },
+    "kaiya-plugins": {
+      "source": { "source": "github", "repo": "Kaiya-study/claude-plugins" }
+    }
+  }
+}
+```
+
+`"すでにあった名前"` の**閉じ括弧のあとにカンマ**があり、
+`"すでにあった名前"` と `"kaiya-plugins"` が**同じ深さに並んでいれば正解**です。
 
 自信がなければ、**Claude に頼んでも構いません。**
-「`~/.claude/settings.json` に my-edition のマーケットプレイスを追加して」と言えば、
+「`~/.claude/settings.json` に kaiya-plugins のマーケットプレイスを追加して」と言えば、
 既存の設定を保ったまま書き足してくれます。
 
 ### 2. アプリを開き直す
