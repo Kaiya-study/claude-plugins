@@ -65,10 +65,10 @@
 ```json
 {
   "extraKnownMarketplaces": {
-    "〔マーケットプレイス名〕": {
+    "kaiya-plugins": {
       "source": {
         "source": "github",
-        "repo": "〔配布元のリポジトリ〕"
+        "repo": "Kaiya-study/claude-plugins"
       }
     }
   }
