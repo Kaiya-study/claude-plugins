@@ -1,0 +1,12 @@
+{
+  "name": "kaiya-plugins",
+  "description": "Kaiya の Claude Code プラグイン置き場",
+  "owner": { "name": "Kaiya" },
+  "plugins": [
+    {
+      "name": "my-edition",
+      "source": "./plugins/my-edition",
+      "description": "参考書のスキャンから、自分のレベルに合わせて行間を補完した「マイ教科書」を作る"
+    }
+  ]
+}

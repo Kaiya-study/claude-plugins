@@ -1,0 +1,6 @@
+{
+  "name": "my-edition",
+  "version": "0.1.0",
+  "description": "参考書のスキャンから、自分のレベルに合わせて行間を補完した私家版の電子書籍を作る。準備・取り込み・行間埋め・組版の4工程。",
+  "keywords": ["study", "textbook", "ocr", "mathematics", "physics"]
+}
