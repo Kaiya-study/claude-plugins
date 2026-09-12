@@ -13,8 +13,8 @@ description: 行間埋めの工程だけを実行する。文字起こし済み�
 - `${CLAUDE_PLUGIN_ROOT}/shared/state-format.md`
 - `${CLAUDE_PLUGIN_ROOT}/shared/ledger-format.md`
 - `references/quality-bar.md` — **何を書けば「検証できる」のかの定義。必読**
-- `.my-edition/profile.md` — 読者のレベル。
-  **写真から始める経路（`page`）では `my-textbooks/<資料名>/profile.md`**
+- `~/my-textbooks/profile.md` — 読者のレベル。**両方の経路が同じものを読む。**
+  本ごとではなく、**資料をまたいで1つだけ**（Windows は `%USERPROFILE%\my-textbooks\profile.md`）
 - `.my-edition/ledger.md` — 既出の式と記号
 
 ## 手順1 — 探索と充填を分ける

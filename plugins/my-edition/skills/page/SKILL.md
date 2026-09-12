@@ -40,13 +40,17 @@ description: 参考書のページを撮った写真から、そのページの�
 
 利用者にパスを意識させない。ファイルを書ける環境なら、次の形で作る。
 
+**根はホームフォルダに固定する。**Windows は `%USERPROFILE%\my-textbooks\`、
+macOS / Linux は `~/my-textbooks/`。**開いているフォルダの下に作らない。**
+どのフォルダで呼ばれても同じ場所を使うためで、そうしないと理解状況も資料も散る。
+
 ```
-my-textbooks/
+~/my-textbooks/
+├── profile.md          ← 理解状況。資料をまたいで1つだけ
 ├── assets/
 │   └── tex-svg.js      ← MathJax。初回だけ取得し、資料をまたいで使い回す
-└── <資料名>/
+└── <資料名>/           ← 資料ごと。置き場所は暫定（下記）
     ├── photos/         ← 送られた写真（原本）
-    ├── profile.md      ← 何が既知で何が要るか。写真が増えるたびに育つ
     ├── parts/          ← 自分が書くのはここだけ
     │   ├── title.txt   ← 資料名を1行
     │   ├── rail.html   ← サイドバー
@@ -55,7 +59,12 @@ my-textbooks/
     └── <資料名>.html   ← マイ教科書。手順8のコマンドが作る。手で書かない
 ```
 
-着手前に `my-textbooks/` の下を見て、既存の資料フォルダを把握しておく。
+- **`profile.md` と `assets/` の場所は動かさない。**この2つは資料ではなく、
+  読む人と機械に属する。一冊まるごとの経路も同じものを使う
+- **`<資料名>/` の置き場所は暫定である**（2026-09-12）。いまは同じ根の下に置くが、
+  あとで変わりうる。ここのパスを他の文書に焼き付けない
+
+着手前に `~/my-textbooks/` の下を見て、既存の資料フォルダと `profile.md` を把握しておく。
 
 **ファイルを書けない環境（スマートフォンなど）では、この手順ごと飛ばす。**
 その場合は従来どおり会話の中だけで完結させ、HTMLをその場で返す。
@@ -103,7 +112,8 @@ my-textbooks/
 
 **聞きっぱなしにしない。**残さないと、次に写真が届いたときに同じことをまた聞くことになる。
 
-`my-textbooks/<資料名>/profile.md` に、`profile-questions.md` の書式で1行足す。
+`~/my-textbooks/profile.md` に、`profile-questions.md` の書式で1行足す。
+**資料ごとに作らない。**この1つを資料をまたいで使う。
 
 ```markdown
 | 座標変換（∇² の書き換え） | 怪しい |
@@ -126,9 +136,8 @@ my-textbooks/
 `${CLAUDE_PLUGIN_ROOT}/skills/fill/SKILL.md` の探索と充填、および
 `${CLAUDE_PLUGIN_ROOT}/skills/fill/references/quality-bar.md` の4条件に従う。
 
-`fill` は `.my-edition/profile.md` を読むと書いているが、**この経路では
-`my-textbooks/<資料名>/profile.md` がそれにあたる。**手順4で得た答えと、そこに
-「粒度の調整」があればそれに従って粒度を決める。
+プロファイルは `~/my-textbooks/profile.md` にある。**両方の経路が同じものを読む。**
+手順4で得た答えと、そこに「粒度の調整」があればそれに従って粒度を決める。
 
 1ステップ1操作、根拠の明示、飛躍の自己申告、検算の手がかり。
 **目的は「正しい答えを与えること」ではなく、読者が自分で検証できる形にすること。**
@@ -187,7 +196,7 @@ my-textbooks/
 
 ### 連結はコマンドに任せる
 
-MathJax を `my-textbooks/assets/tex-svg.js` に取得する（無ければ一度だけ。
+MathJax を `~/my-textbooks/assets/tex-svg.js` に取得する（無ければ一度だけ。
 `${CLAUDE_PLUGIN_ROOT}/skills/build/SKILL.md` の「MathJax の取得」と同じ。3.2.2 に固定）。
 
 macOS / Linux:
@@ -195,15 +204,15 @@ macOS / Linux:
 ```
 sh "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/assemble.sh" \
    "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/template.html" \
-   my-textbooks/<資料名>/parts/title.txt my-textbooks/<資料名>/parts/rail.html \
-   my-textbooks/assets/tex-svg.js my-textbooks/<資料名>/<資料名>.html \
-   my-textbooks/<資料名>/parts/body.html
+   "$HOME/my-textbooks/<資料名>/parts/title.txt" "$HOME/my-textbooks/<資料名>/parts/rail.html" \
+   "$HOME/my-textbooks/assets/tex-svg.js" "$HOME/my-textbooks/<資料名>/<資料名>.html" \
+   "$HOME/my-textbooks/<資料名>/parts/body.html"
 ```
 
 Windows:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/assemble.ps1" "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/template.html" my-textbooks/<資料名>/parts/title.txt my-textbooks/<資料名>/parts/rail.html my-textbooks/assets/tex-svg.js my-textbooks/<資料名>/<資料名>.html my-textbooks/<資料名>/parts/body.html
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/assemble.ps1" "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/template.html" "$env:USERPROFILE\my-textbooks\<資料名>\parts\title.txt" "$env:USERPROFILE\my-textbooks\<資料名>\parts\rail.html" "$env:USERPROFILE\my-textbooks\assets\tex-svg.js" "$env:USERPROFILE\my-textbooks\<資料名>\<資料名>.html" "$env:USERPROFILE\my-textbooks\<資料名>\parts\body.html"
 ```
 
 - **`-ExecutionPolicy Bypass` を省かない。**既定の設定では `.ps1` の実行が拒否される
@@ -224,7 +233,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skill
 - **詳しく質問された** → その書き方ではまだ行間が広い。同じ種類を細かく割る
 - **「ここまで丁寧でなくてよい」と言われた** → そこは行間ではなかった。同じ種類を広げる
 
-答えたあとに、`my-textbooks/<資料名>/profile.md` の「粒度の調整」へ**きっかけと一緒に**書く
+答えたあとに、`~/my-textbooks/profile.md` の「粒度の調整」へ**きっかけと資料名を一緒に**書く
 （書式は `${CLAUDE_PLUGIN_ROOT}/skills/setup/references/profile-questions.md` の「更新」）。
 範囲が判断できないときは聞く。「同じような式変形も、すべて細かくしますか」
 

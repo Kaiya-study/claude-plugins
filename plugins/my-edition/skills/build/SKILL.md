@@ -51,6 +51,7 @@ MathJax はここには入っていない。初回の組版で一度だけ取得
 ## 手順4 — プロファイルを見せる
 
 サイドバーに、この版が生成されたときのプロファイルを表示する。
+読むのは `~/my-textbooks/profile.md`（資料をまたいで1つだけ）。
 「既知の項目には行間を作っていません」と添える。
 
 読者のレベルが変われば同じ本から別の版が生成される、ということが1画面で伝わる。
@@ -108,14 +109,14 @@ macOS / Linux:
 sh "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/assemble.sh" \
    "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/template.html" \
    .my-edition/parts/title.txt .my-edition/parts/rail.html \
-   .my-edition/assets/tex-svg.js .my-edition/out/book.html \
+   "$HOME/my-textbooks/assets/tex-svg.js" .my-edition/out/book.html \
    .my-edition/parts/ch01.html .my-edition/parts/ch02.html .my-edition/parts/colophon.html
 ```
 
 Windows:
 
 ```
-powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/assemble.ps1" "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/template.html" .my-edition/parts/title.txt .my-edition/parts/rail.html .my-edition/assets/tex-svg.js .my-edition/out/book.html .my-edition/parts/ch01.html .my-edition/parts/ch02.html .my-edition/parts/colophon.html
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/assemble.ps1" "${CLAUDE_PLUGIN_ROOT}/skills/build/assets/template.html" .my-edition/parts/title.txt .my-edition/parts/rail.html "$env:USERPROFILE\my-textbooks\assets\tex-svg.js" .my-edition/out/book.html .my-edition/parts/ch01.html .my-edition/parts/ch02.html .my-edition/parts/colophon.html
 ```
 
 **断片は章の順に並べて渡し、`colophon.html` を最後に置く。**並べた順がそのまま本の順になる。
@@ -156,7 +157,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skill
 **プラグインには同梱していない。**Apache-2.0 のライブラリを再配布しないため。
 その代わり、**最初の組版のときに一度だけ落として、以後は使い回す。**
 
-置き場所は `.my-edition/assets/tex-svg.js`。
+置き場所は `~/my-textbooks/assets/tex-svg.js`（Windows は
+`%USERPROFILE%\my-textbooks\assets\tex-svg.js`）。**本ごとに落とさない。**
+写真の経路と共通で、**本が増えても2.1MB は1つだけ**である。
 
 ```
 https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js
@@ -164,7 +167,8 @@ https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js
 
 - **バージョンを固定する。**`latest` を取らない。テンプレートの `src` と同じ 3.2.2 を使う。
   版が変わると、いつ作ったかで出力が変わる
-- すでに `.my-edition/assets/tex-svg.js` があれば**取りに行かない**。まとまりごとに落とさない
+- すでに `~/my-textbooks/assets/tex-svg.js` があれば**取りに行かない**。まとまりごとに落とさない。
+  **別の本で落としたものがあれば、それを使う**
 - 取得できなかったときは、**軽量版（テンプレートのまま）で出力して、その旨を読者に伝える。**
   組版そのものは止めない。テンプレートには CDN へのフォールバックと、
   数式が出なかったときの通知が仕込んである
